@@ -73,7 +73,7 @@ def main(args):
             if args.verbose:
                 elapsed_time = time() - global_start
                 eta = format_seconds(elapsed_time / (i + 1) * (files_count - i - 1))
-                print(f'[{i + 1:0{len(str(files_count))}} / {files_count}] ({d_end - d_start:.2f}s) ETA: {eta}')
+                print(f'[{i + 1: {len(str(files_count))}} / {files_count}] ({d_end - d_start:.2f}s) ETA: {eta}')
 
         if args.verbose:
             print(f'Done in {format_seconds(time() - global_start)}')

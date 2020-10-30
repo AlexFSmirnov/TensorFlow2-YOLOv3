@@ -3,15 +3,14 @@ import shutil
 import argparse
 import xml.etree.ElementTree as ET
 from random import shuffle
+from common.constants import SUPPORTED_IMAGE_EXTENSIONS
 
 parser = argparse.ArgumentParser(description='Given a dataset annotated with Pascal VOC, split it to train and test sets and transform annotations to YOLO format.')
 parser.add_argument('-i', '--images_dir', required=True, help='Path to directory with images.')
 parser.add_argument('-a', '--annotations_dir', help='Path to directory with .xml annotations for images. Defaults to the value of images_dir.')
 parser.add_argument('-o', '--output_dir', required=True, help='Path to where the result will be saved')
 parser.add_argument('-s', '--train_test_split', default=0.8, type=float, help='Defines the ratio between training and test data: train = total * train_test_split; test = total * (1 - train_test_split).')
-parser.add_argument('--verbose', action='store_true', help='Show progress.')
-
-SUPPORTED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif']
+parser.add_argument('--verbose', action='store_true', help='Log progress.')
 
 class_names = []
 
@@ -40,7 +39,7 @@ def main(args):
 
     # Filtering out images with unsupported extensions
     valid_images = list(filter(
-        lambda filename: filename.split('.')[-1] in SUPPORTED_EXTENSIONS,
+        lambda filename: filename.split('.')[-1] in SUPPORTED_IMAGE_EXTENSIONS,
         os.listdir(args.images_dir)
     ))
 

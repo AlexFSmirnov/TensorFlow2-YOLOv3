@@ -6,7 +6,7 @@ from utils.detection import image_preprocess, postprocess_boxes, nms, draw_bbox
 from common.enums import ModelPurpose, WeightType
 
 class YOLOv3:
-    def __init__(self, num_classes, purpose=ModelPurpose.Detection, input_size=416, channels=3, tiny=False):
+    def __init__(self, num_classes, purpose=ModelPurpose.detection, input_size=416, channels=3, tiny=False):
         self.num_classes = num_classes
         self.purpose = purpose
         self.input_size = input_size
@@ -18,13 +18,13 @@ class YOLOv3:
             input_size,
             channels,
             tiny,
-            is_for_training=(purpose == ModelPurpose.Training),
+            is_for_training=(purpose == ModelPurpose.training),
         )
 
     def load_weights(self, path, type):
-        if type == WeightType.Darknet:
+        if type == WeightType.darknet:
             self.load_darknet_weights(path)
-        elif type == WeightType.Checkpoint:
+        elif type == WeightType.checkpoint:
             self.model.load_weights(path)
         else:
             raise Exception('Weights type not provided.')
@@ -81,14 +81,14 @@ class YOLOv3:
             assert len(wf.read()) == 0, 'failed to read all data'
 
     def train(self):
-        if self.purpose != ModelPurpose.Training:
-            raise Exception(f'Model was not created with purpose "{self.purpose.name}". Create it with purpose "{ModelPurpose.Training.name}" instead.')
+        if self.purpose != ModelPurpose.training:
+            raise Exception(f'Model was not created with purpose "{self.purpose.name}". Create it with purpose "{ModelPurpose.training.name}" instead.')
 
         pass
 
-    def detect_image(self, image_path, classes, output_path=None, score_threshold=0.8, iou_threshold=0.45, show=False):
-        if self.purpose != ModelPurpose.Detection:
-            raise Exception(f'Model was not created with purpose "{self.purpose.name}". Create it with purpose "{ModelPurpose.Detection.name}" instead.')
+    def detect_image(self, image_path, classes, output_path=None, score_threshold=0.4, iou_threshold=0.45, show=False, show_label=True, show_confidence=True):
+        if self.purpose != ModelPurpose.detection:
+            raise Exception(f'Model was not created with purpose "{self.purpose.name}". Create it with purpose "{ModelPurpose.detection.name}" instead.')
 
         original_image = cv2.imread(image_path)
         original_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB)
@@ -104,7 +104,7 @@ class YOLOv3:
         bboxes = postprocess_boxes(pred_bbox, original_image, self.input_size, score_threshold)
         bboxes = nms(bboxes, iou_threshold, method='nms')
 
-        image = draw_bbox(original_image, bboxes, classes=classes)
+        image = draw_bbox(original_image, bboxes, classes=classes, show_label=show_label, show_confidence=show_confidence)
 
         if output_path:
             cv2.imwrite(output_path, image)

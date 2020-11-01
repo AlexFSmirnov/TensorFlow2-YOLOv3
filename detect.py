@@ -3,7 +3,8 @@ import shutil
 import argparse
 from time import time 
 from models.yolov3 import YOLOv3
-from utils.general import get_classes_from_file
+from utils.general import get_weights_type, get_classes_from_file
+from utils.logging import format_seconds
 from common.enums import ModelPurpose, WeightType
 from common.constants import SUPPORTED_IMAGE_EXTENSIONS
 
@@ -19,13 +20,6 @@ parser.add_argument('--iou_threshold', default=0.45, type=float, help='IOU thres
 parser.add_argument('--show_label', action='store_true', help='Show labels for each bounding box in the output.')
 parser.add_argument('--show_confidence', action='store_true', help='Show confidence next to each bounding box label.')
 parser.add_argument('--verbose', action='store_true', help='Log progress.')
-
-def get_weights_type(input_type, weights_path):
-    if not input_type:
-        if weights_path.split('.')[-1] == 'weights':
-            return WeightType.darknet
-        return WeightType.checkpoint
-    return WeightType[input_type]
 
 def main(args):
     args.weights_type = get_weights_type(args.weights_type, args.weights)
@@ -47,7 +41,7 @@ def main(args):
         if filename.split('.')[-1] not in SUPPORTED_IMAGE_EXTENSIONS:
             return
 
-        model.detect_image(
+        model.detect(
             os.path.join(dir, filename),
             classes,
             os.path.join(args.output, f'detected_{filename}') if args.output else None,
@@ -73,15 +67,10 @@ def main(args):
             if args.verbose:
                 elapsed_time = time() - global_start
                 eta = format_seconds(elapsed_time / (i + 1) * (files_count - i - 1))
-                print(f'[{i + 1: {len(str(files_count))}} / {files_count}] ({d_end - d_start:.2f}s) ETA: {eta}')
+                print(f'[{i + 1: {len(str(files_count))}}/{files_count}] ({d_end - d_start:.2f}s) ETA: {eta}')
 
         if args.verbose:
             print(f'Done in {format_seconds(time() - global_start)}')
-
-def format_seconds(s):
-    hours, rem = divmod(int(s), 3600)
-    minutes, seconds = divmod(rem, 60)
-    return f'{hours:02}h {minutes:02}m {seconds:02}s'
 
 if __name__ == '__main__':
     args = parser.parse_args()

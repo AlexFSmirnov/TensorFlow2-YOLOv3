@@ -3,21 +3,6 @@ import random
 import colorsys
 import numpy as np
 
-def image_preprocess(image, target_size):
-    ih, iw    = target_size
-    h,  w, _  = image.shape
-
-    scale = min(iw / w, ih / h)
-    nw, nh  = int(scale * w), int(scale * h)
-    image_resized = cv2.resize(image, (nw, nh))
-
-    image_paded = np.full(shape=[ih, iw, 3], fill_value=128.0)
-    dw, dh = (iw - nw) // 2, (ih - nh) // 2
-    image_paded[dh: nh + dh, dw: nw + dw, :] = image_resized
-    image_paded = image_paded / 255.
-
-    return image_paded
-
 def postprocess_boxes(pred_bbox, original_image, input_size, score_threshold):
     valid_scale=[0, np.inf]
     pred_bbox = np.array(pred_bbox)
@@ -139,7 +124,7 @@ def draw_bbox(image, bboxes, classes, show_label=True, show_confidence=True):
         (x1, y1), (x2, y2) = (coor[0], coor[1]), (coor[2], coor[3])
 
         # put object rectangle
-        cv2.rectangle(image, (x1, y1), (x2, y2), bbox_color, bbox_thick*2)
+        cv2.rectangle(image, (x1, y1), (x2, y2), bbox_color, bbox_thick * 2)
 
         if show_label:
             # get text label

@@ -37,6 +37,11 @@ def main(args):
     if not args.annotations_dir:
         args.annotations_dir = args.images_dir
 
+    # Clear output dataset directory
+    if os.path.exists(args.output_dir):
+        shutil.rmtree(args.output_dir)
+    os.mkdir(args.output_dir)
+
     # Filtering out images with unsupported extensions
     valid_images = list(filter(
         lambda filename: filename.split('.')[-1] in SUPPORTED_IMAGE_EXTENSIONS,
@@ -56,10 +61,7 @@ def main(args):
     for subset, images in [['train', train_images], ['test', test_images]]:
         if args.verbose: print(f'Processing {subset}... ', end='')
 
-        output_images_dir = os.path.join(args.output_dir, subset)
-        if os.path.exists(output_images_dir):
-            shutil.rmtree(output_images_dir)
-        os.mkdir(output_images_dir)
+        os.mkdir(os.path.join(args.output_dir, subset))
 
         yolo_annotations = ''
         for image_filename in images:

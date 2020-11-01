@@ -167,10 +167,10 @@ class YOLOv3:
                 if train_writer is not None:
                     with train_writer.as_default():
                         tf.summary.scalar("learning_rate", optimizer.lr, step=global_steps)
-                        tf.summary.scalar("loss/total_loss", total_loss, step=global_steps)
-                        tf.summary.scalar("loss/giou_loss", giou_loss, step=global_steps)
-                        tf.summary.scalar("loss/conf_loss", conf_loss, step=global_steps)
-                        tf.summary.scalar("loss/prob_loss", prob_loss, step=global_steps)
+                        tf.summary.scalar("train_loss/total_loss", total_loss, step=global_steps)
+                        tf.summary.scalar("train_loss/giou_loss", giou_loss, step=global_steps)
+                        tf.summary.scalar("train_loss/conf_loss", conf_loss, step=global_steps)
+                        tf.summary.scalar("train_loss/prob_loss", prob_loss, step=global_steps)
                     train_writer.flush()
                 
             return global_steps.numpy(), optimizer.lr.numpy(), giou_loss.numpy(), conf_loss.numpy(), prob_loss.numpy(), total_loss.numpy()

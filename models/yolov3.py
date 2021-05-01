@@ -32,7 +32,13 @@ class YOLOv3:
         if type == WeightType.darknet:
             self.load_darknet_weights(path)
         elif type == WeightType.checkpoint:
-            self.keras_model.load_weights(path)
+            final_path = path
+            if '.index' in final_path:
+                final_path = final_path[:final_path.index('.index')]
+            if '.data-' in final_path:
+                final_path = final_path[:final_path.index('.data-')]
+
+            self.keras_model.load_weights(final_path)
         else:
             raise Exception('Weights type not provided.')
 

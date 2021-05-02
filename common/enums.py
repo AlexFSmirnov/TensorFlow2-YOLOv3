@@ -7,3 +7,5 @@ WeightType = Enum('WeightType', 'darknet checkpoint')
 DatasetType = Enum('DatasetType', 'train test')
 
 CheckpointSaveMode = Enum('CheckpointSaveMode', 'all best last')
+
+TFJSModelType = Enum('TFJSModelType', 'graph layers')

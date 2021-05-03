@@ -31,10 +31,10 @@ def main(args):
     model = YOLOv3(len(classes))
     model.load_weights(args.weights, args.weights_type)
 
-    if args.output_type == TFJSModelType.layers:
+    if args.output_type == TFJSModelType.layers.name:
         if args.verbose: print('Converting the model to the TFJS Layers Model...')
         tensorflowjs.converters.save_keras_model(model.keras_model, args.output)
-    elif args.output_type == TFJSModelType.graph:
+    elif args.output_type == TFJSModelType.graph.name:
         if args.verbose: print('Saving a model as a TF Saved Model for futrher conversion...')
         saved_model_dir = f'{args.output}_temp_tf_saved_model'
         while True:
@@ -46,7 +46,7 @@ def main(args):
         tf.keras.models.save_model(model.keras_model, saved_model_dir)
         if args.verbose: print('Done!')
 
-        if args.verbose: print('Converting the TF Saved Model to a TFJS Graph Model...')
+        if args.verbose: print('Converting the TF Saved Model to a TFJS Graph Model (this will take a while)...')
         tensorflowjs.converters.convert_tf_saved_model(saved_model_dir, args.output)
         if args.verbose: print('Done!')
 
